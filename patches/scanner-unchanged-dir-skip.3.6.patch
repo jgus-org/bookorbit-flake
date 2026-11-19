@@ -1,0 +1,46 @@
+diff --git a/server/src/modules/scanner/lib/walk.ts b/server/src/modules/scanner/lib/walk.ts
+index a0dcfe6..db210d4 100644
+--- a/server/src/modules/scanner/lib/walk.ts
++++ b/server/src/modules/scanner/lib/walk.ts
+@@ -139,40 +139,7 @@ async function collectByDir(
+         }
+       }
+ 
+-      // Leaf-level mtime skip: if this dir has files, check if its mtime is unchanged.
+-      // Safety rules:
+-      // 1. Never skip disc dirs (they get flattened into parent)
+-      // 2. Never skip dirs with disc subdirs (flattening merges disc files into parent,
+-      //    so parent must always have its own files scanned for a complete candidate)
+-      // 3. Never skip non-root dirs if parent dir's mtime changed (parent may have new files
+-      //    that turn this dir into a stem-named subdir needing flattening).
+-      //    Root is exempt: root-level files are never stem-merged into a parent (see
+-      //    buildBookCandidates: parent === libraryFolderPath is explicitly skipped).
+-      // A disc-named library folder is no longer flattened, but it stays unskippable: libraries
+-      // scanned while it was are regrouped by their next scan, whatever its mtime.
+-      const hasDiscSubdirs = subdirectoryPaths.some((s) => isDiscDirectory(basename(s)));
+-      const canSkip = knownDirMtimes && unchangedDirs && dirMtimes && filePaths.length > 0 && !isDiscDirectory(basename(dir)) && !hasDiscSubdirs;
+-
+-      if (canSkip) {
+-        // For non-root dirs, also require parent mtime to be unchanged (guards stem-named merging).
+-        // Root has no library parent, so this check is skipped; root-level files are never
+-        // stem-merged and the stem-flattening loop explicitly skips root children.
+-        let parentChanged = false;
+-        if (dir !== libraryRoot) {
+-          const parentDir = dirname(dir);
+-          const parentStoredMtime = knownDirMtimes.get(parentDir);
+-          const parentCurrentMtime = dirMtimes.get(parentDir);
+-          parentChanged = parentStoredMtime === undefined || parentCurrentMtime === undefined || parentStoredMtime !== parentCurrentMtime;
+-        }
+-
+-        const storedMtime = knownDirMtimes.get(dir);
+-        const currentMtime = dirMtimes.get(dir);
+-        if (!parentChanged && storedMtime !== undefined && currentMtime !== undefined && storedMtime === currentMtime) {
+-          unchangedDirs.add(dir);
+-        } else {
+-          await statFilesIntoAcc(filePaths, dir, libraryRoot, acc, logger);
+-        }
+-      } else if (filePaths.length > 0) {
++      if (filePaths.length > 0) {
+         await statFilesIntoAcc(filePaths, dir, libraryRoot, acc, logger);
+       }
+     },
