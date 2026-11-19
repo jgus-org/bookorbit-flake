@@ -1,3 +1,4 @@
+# Auto-managed by `nix run .#update-version`. Manual edits will be overwritten by the next bump.
 {
   pnpmDepsHash = "sha256-y/cdgAjv8ZWlF4IikKb0pPqrlakMfTo9nY1Bb9AnxlM=";
   pnpmPackage = "pnpm_11";
