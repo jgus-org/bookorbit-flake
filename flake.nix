@@ -33,6 +33,12 @@
         repo = "bookorbit";
         type = "github";
       };
+      atLeast =
+        threshold: version:
+        flake-lib.lib.versionMatchesComparison version {
+          operator = ">=";
+          version = threshold;
+        };
     in
     flake-lib.lib.eachDefaultSystem (
       system:
@@ -129,7 +135,16 @@
                 pkgs.pnpmConfigHook
                 pnpm
               ];
-              patches = [ ./patches/0001-fix-incremental-opf-scans-and-file-deletions.patch ];
+              patches = [
+                (
+                  if atLeast "3.6.0" pin.version then
+                    ./patches/scanner-unchanged-dir-skip.3.6.patch
+                  else if atLeast "3.0.0" pin.version then
+                    ./patches/scanner-unchanged-dir-skip.3.0.patch
+                  else
+                    ./patches/scanner-unchanged-dir-skip.pre-3.0.patch
+                )
+              ];
               pname = "bookorbit";
               pnpmDeps = pkgs.fetchPnpmDeps {
                 inherit (finalAttrs) pname src version;
