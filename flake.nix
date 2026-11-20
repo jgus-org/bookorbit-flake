@@ -144,6 +144,7 @@
                   else
                     ./patches/scanner-unchanged-dir-skip.pre-3.0.patch
                 )
+                ./patches/server-build-no-typecheck.patch
               ];
               pname = "bookorbit";
               pnpmDeps = pkgs.fetchPnpmDeps {

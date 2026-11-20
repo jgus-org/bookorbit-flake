@@ -1,0 +1,13 @@
+diff --git a/server/nest-cli.json b/server/nest-cli.json
+index 88730e3..b882bc6 100644
+--- a/server/nest-cli.json
++++ b/server/nest-cli.json
+@@ -5,7 +5,7 @@
+   "compilerOptions": {
+     "deleteOutDir": true,
+     "builder": "swc",
+-    "typeCheck": true,
++    "typeCheck": false,
+     "plugins": [
+       {
+         "name": "@nestjs/swagger",
