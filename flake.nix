@@ -131,12 +131,13 @@
               ];
               patches = [ ./patches/0001-fix-incremental-opf-scans-and-file-deletions.patch ];
               pname = "bookorbit";
-              pnpmDeps = pkgs.fetchPnpmDeps {
+              pnpmDeps = flake-lib.lib.mkPnpmDeps {
                 inherit (finalAttrs) pname src version;
-                inherit pnpm;
+                inherit pkgs pnpm;
                 fetcherVersion = 4;
                 hash = pin.pnpmDepsHash;
                 nativeBuildInputs = [ pkgs.nodejs ];
+                sourceFingerprint = pin.sourceHash;
               };
               src = pkgs.fetchFromGitHub {
                 inherit (source) owner repo;
